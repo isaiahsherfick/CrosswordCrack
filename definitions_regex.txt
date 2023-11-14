@@ -1,0 +1,2 @@
+grep 'Defn:((?:.|\n)*?)(?=\n\n|\n$)' -U websters_unabridged_english_dictionary.txt --pcre2 
+
