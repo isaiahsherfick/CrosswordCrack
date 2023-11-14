@@ -9,8 +9,7 @@ fn main() {
             .short('p')
             .long("pattern")
             .takes_value(true)
-            .help("Sets the pattern for the word to search for")
-            // You can add more configurations for this argument, like required, multiple, etc.
+            .help("Sets the pattern for the word to search for. To find all 7-letter words with an R in the middle, for example: ***R*** ")
         )
         .arg(Arg::with_name("synonyms")
             .short('s')
@@ -18,7 +17,7 @@ fn main() {
             .takes_value(true)
             .use_delimiter(true)
             .multiple(true)
-            .help("Sets synonyms for the word")
+            .help("Sets synonyms for the word. Example usage: crosswordcrack --synonyms [bad, poor, lackluster]")
         )
         .arg(Arg::with_name("definition_contains")
             .short('d')
@@ -26,9 +25,14 @@ fn main() {
             .takes_value(true)
             .use_delimiter(true)
             .multiple(true)
-            .help("Search for keywords in the definition")
+            .help("Search for keywords in the definition using regular expressions. Example usage: crosswordcrack --definition_contains regex")
         )
         .get_matches();
+
+    let synonyms_list: Vec<&str>;
+    let keywords_list: Vec<&str>;
+    let pattern: &str;
+
 
     if let Some(pattern) = matches.value_of("pattern") {
         // Process pattern argument
@@ -37,16 +41,21 @@ fn main() {
 
     if let Some(synonyms) = matches.values_of("synonyms") {
         // Process synonyms argument
-        let synonyms_list: Vec<&str> = synonyms.collect();
+        synonyms_list = synonyms.collect();
         println!("Synonyms: {:?}", synonyms_list);
     }
 
     if let Some(definition_contains) = matches.values_of("definition_contains") {
         // Process definition_contains argument
-        let keywords: Vec<&str> = definition_contains.collect();
-        println!("Definition contains: {:?}", keywords);
+        let keywords_list: Vec<&str> = definition_contains.collect();
+        println!("Definition contains: {:?}", keywords_list);
     }
-
-    // Add more logic to handle these parsed arguments as per your requirements
+    handle_args(pattern,synonyms_list,keywords_list);
 }
 
+
+fn handle_args(pattern: &str,synonyms: Vec<&str>,definition_contains: Vec<&str>) {
+    if (pattern.is_null() && synonyms.is_null() && definition_contains.is_null()) {
+        println!("Usage: crosswordcrack --pattern --definition_contains --synonyms\nSee help options for individual params for more information.");
+    }
+}
